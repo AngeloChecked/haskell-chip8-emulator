@@ -1,0 +1,66 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.35.1.
+--
+-- see: https://github.com/sol/hpack
+
+name:           chip8
+version:        0.0.0
+build-type:     Simple
+
+library
+  exposed-modules:
+      Display
+      Emulator
+      Lib
+      OpCodes
+      Timer
+  other-modules:
+      Paths_chip8
+  hs-source-dirs:
+      src
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , hspec
+    , stm
+    , vty
+  default-language: Haskell2010
+
+executable chip8-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_chip8
+  hs-source-dirs:
+      app
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , chip8
+    , hspec
+    , stm
+    , vty
+  default-language: Haskell2010
+
+test-suite chip8-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      DummyTestSpec
+      Paths_chip8
+  hs-source-dirs:
+      test
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , chip8
+    , hspec
+    , stm
+    , vty
+  default-language: Haskell2010

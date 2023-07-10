@@ -1,0 +1,60 @@
+chip8-0.0.0: unregistering (local file changes: app/Main.hs)
+chip8> build (lib + exe)
+Preprocessing library for chip8-0.0.0..
+Building library for chip8-0.0.0..
+Preprocessing executable 'chip8-exe' for chip8-0.0.0..
+Building executable 'chip8-exe' for chip8-0.0.0..
+[2 of 2] Compiling Main
+
+/home/checked/hs/chip8/app/Main.hs:3:1: warning: [-Wunused-imports]
+    The qualified import of ‘Graphics.Vty’ is redundant
+      except perhaps to import instances from ‘Graphics.Vty’
+    To import instances alone, use: import Graphics.Vty()
+  |
+3 | import qualified Graphics.Vty as T
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/home/checked/hs/chip8/app/Main.hs:5:1: warning: [-Wunused-imports]
+    The import of ‘loop’ from module ‘Display’ is redundant
+  |
+5 | import Display (loop, whiteDisplay) 
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/home/checked/hs/chip8/app/Main.hs:6:1: warning: [-Wunused-imports]
+    The import of ‘nextTick’ from module ‘Emulator’ is redundant
+  |
+6 | import Emulator (nextTick, EmulatorState(..))
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/home/checked/hs/chip8/app/Main.hs:11:1: warning: [-Wunused-imports]
+    The import of ‘traceId’ from module ‘Debug.Trace’ is redundant
+   |
+11 | import Debug.Trace (trace, traceId)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/home/checked/hs/chip8/app/Main.hs:14:1: warning: [-Wunused-top-binds]
+    Defined but not used: ‘initialState’
+   |
+14 | initialState = EmulatorState whiteDisplay 0
+   | ^^^^^^^^^^^^
+
+/home/checked/hs/chip8/app/Main.hs:17:1: warning: [-Wmissing-signatures]
+    Top-level binding with no type signature: main :: IO ()
+   |
+17 | main = do
+   | ^^^^
+
+/home/checked/hs/chip8/app/Main.hs:31:26: warning: [-Wtype-defaults]
+    • Defaulting the following constraint to type ‘Integer’
+        Num p0 arising from the literal ‘33’
+    • In the second argument of ‘trace’, namely ‘33’
+      In the expression: trace "bhoo" 33
+      In a pattern binding: _ = trace "bhoo" 33
+   |
+31 |     let _ = trace "bhoo" 33 
+   |                          ^^
+Linking .stack-work/dist/x86_64-linux/Cabal-3.2.1.0/build/chip8-exe/chip8-exe ...
+chip8> copy/register
+Installing library in /home/checked/hs/chip8/.stack-work/install/x86_64-linux/7ea439a0997827726da709d0d3f4658f703f7153163300fbf1fbd5a90ecaa0c6/8.10.7/lib/x86_64-linux-ghc-8.10.7/chip8-0.0.0-1tTbHXoHmyG9J9q5v9Bi1Q
+Installing executable chip8-exe in /home/checked/hs/chip8/.stack-work/install/x86_64-linux/7ea439a0997827726da709d0d3f4658f703f7153163300fbf1fbd5a90ecaa0c6/8.10.7/bin
+Registering library for chip8-0.0.0..
