@@ -9,7 +9,6 @@ import qualified Data.Map as M
 import Emulator (Display, DisplaySize, EmulatorState (EmulatorState, cursor, display, keyboard, speed), Keyboard, displaySize)
 import qualified Graphics.Vty as T
 import Timer (nextSecond)
-import Data.Maybe (isJust)
 
 -- possible refactor:
 -- import Control.Monad.RWS

@@ -14,6 +14,7 @@ library
       Emulator
       Lib
       OpCodes
+      Rom
       Timer
   other-modules:
       Paths_chip8

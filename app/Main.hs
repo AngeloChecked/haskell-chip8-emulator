@@ -3,7 +3,7 @@ module Main (main) where
 import qualified Graphics.Vty as T
 
 import Display (loop, whiteDisplay) 
-import Emulator (nextTick, EmulatorState(..))
+import Emulator (nextTick, EmulatorState(EmulatorState))
 import Timer (newOneSecondTimer)
 
 initialState :: IO EmulatorState
@@ -22,5 +22,7 @@ main = do
   T.shutdown vty
 
 
-   
+-- main :: IO ()
+-- main = do
+--    readRom "roms/maze.ch8"
 

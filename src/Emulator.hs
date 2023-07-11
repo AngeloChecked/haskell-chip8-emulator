@@ -4,11 +4,11 @@ import Data.Array
 import Timer (Timer)
 import qualified Graphics.Vty as T
 import qualified Data.Map as M
+import Data.Word (Word16)
+import Foreign (Word8)
 
 type Coord = (Int, Int)
-
 type Display = Array Coord Bool
-
 type Keyboard = [Bool]
 
 data EmulatorState = EmulatorState {
@@ -19,6 +19,7 @@ data EmulatorState = EmulatorState {
                      }
   deriving (Eq)
 
+type Memory = M.Map Word16 Word8
 
 type DisplaySize = (Int,Int)
 
