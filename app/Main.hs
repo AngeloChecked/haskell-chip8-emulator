@@ -9,7 +9,8 @@ import Timer (newOneSecondTimer)
 initialState :: IO EmulatorState
 initialState = do 
     timer <- newOneSecondTimer
-    return $ EmulatorState whiteDisplay 0 (timer,0,0)
+    let keyboard = replicate 16 False
+    return $ EmulatorState whiteDisplay 0 (timer,0,0) keyboard
 
 main :: IO ()
 main = do

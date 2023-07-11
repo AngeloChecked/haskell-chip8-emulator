@@ -1,10 +1,15 @@
+{-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE RecordWildCards #-}
+
 module Display (loop, baseDisplay, whiteDisplay) where
 
-import Data.Array ((!), array)
-import qualified Graphics.Vty as T
 import Control.Monad
-import Emulator(EmulatorState (EmulatorState), displaySize, Display, DisplaySize)
-import Timer (nextSecond, newOneSecondTimer, Timer)
+import Data.Array (array, (!))
+import qualified Data.Map as M 
+import Emulator (Display, DisplaySize, EmulatorState (EmulatorState, cursor, display, keyboard, speed), Keyboard, displaySize)
+import qualified Graphics.Vty as T
+import Timer (nextSecond)
+import Data.Maybe (isJust)
 
 -- possible refactor:
 -- import Control.Monad.RWS
@@ -25,32 +30,76 @@ tpsMessage n = do
   T.translate (width - length msg) height tpsText
 
 applyState :: T.Vty -> EmulatorState -> IO ()
-applyState vty (EmulatorState display _ (_, _, lastSecondTick)) = do 
+applyState vty EmulatorState {display, speed, keyboard} = do
+  let (_, _, lastSecondTick) = speed
+  let keypad = makeKeypad keyboard
   let displayImage = buildDisplayImage displaySize display
-  let displayPicture = T.picForLayers [exitMessage, tpsMessage lastSecondTick, displayImage]
+  let displayPicture = T.picForLayers [exitMessage, tpsMessage lastSecondTick, keypad, displayImage]
   T.update vty displayPicture
-  
-loop :: T.Vty -> EmulatorState -> (EmulatorState -> EmulatorState) -> IO ()
+
+makeKeypad :: Keyboard -> T.Image
+makeKeypad keyboard = do
+    let (_, height) = displaySize
+    let mapping =
+          M.fromList
+            [ (1,'1'),
+              (2,'2'),
+              (3,'3'),
+              (12,'4'),
+              (4,'q'),
+              (5,'w'),
+              (6,'e'),
+              (13,'r'),
+              (7,'a'),
+              (8,'s'),
+              (9,'d'),
+              (14,'f'),
+              (10,'z'),
+              (0,'x'),
+              (11,'c'),
+              (15,'v')
+            ]
+    let keypadForm = [ 
+                       [1,  2, 3 , 12],
+                       [4,  5, 6 , 13],
+                       [7,  8, 9 , 14],
+                       [10, 0, 11, 15]
+                     ]
+
+    let toImage i = let 
+             pressed = (keyboard !! i)
+             key = (M.!) mapping i
+          in keyForKeypad pressed key
+
+    let keypad = T.vertCat $ T.horizCat <$> (map . map) toImage keypadForm
+    T.translate 0 (height+2) keypad
+
+
+keyForKeypad :: Bool -> Char -> T.Image
+keyForKeypad True c  = T.char (T.defAttr `T.withForeColor` T.black `T.withBackColor` T.white) c
+keyForKeypad False c = T.char (T.defAttr `T.withForeColor` T.white `T.withBackColor` T.black) c
+
+loop :: T.Vty -> EmulatorState -> (Maybe T.Event -> EmulatorState -> EmulatorState) -> IO ()
 loop vty state nextTick = do
+  let EmulatorState {speed} = state
+  let (timer, nTick, lastTick) = speed
 
-    let (EmulatorState _ _ (timer, nTick, lastTick)) = state
-    (sPassed, newTimer) <- nextSecond timer
-    let tickToShow = if sPassed then nTick else lastTick
-    let nTickReset = if sPassed then 0 else nTick+1
+  (sPassed, newTimer) <- nextSecond timer
+  let tickToShow = if sPassed then nTick else lastTick
+  let nTickReset = if sPassed then 0 else nTick + 1
 
-    applyState vty state
+  event <- T.nextEventNonblocking vty
+  applyState vty state
 
-    event <- T.nextEventNonblocking vty
+  let EmulatorState {display, cursor, keyboard} = nextTick event state
 
-    let (EmulatorState display cursor _) = nextTick state
-    let newState = EmulatorState display cursor (newTimer, nTickReset, tickToShow)
+  let newState = EmulatorState display cursor (newTimer, nTickReset, tickToShow) keyboard
 
-    T.refresh vty
-    unless (isExit event) (loop vty newState nextTick)
-
-  where 
-      isExit (Just (T.EvKey T.KEsc [])) = True
-      isExit _ = False
+  T.refresh vty
+  unless (isExit event) (loop vty newState nextTick)
+  where
+    isExit (Just (T.EvKey T.KEsc [])) = True
+    isExit _ = False
 
 white, black :: T.Image
 white = T.char (T.defAttr `T.withBackColor` T.white) ' '
@@ -67,7 +116,7 @@ baseDisplay (width, height) =
     [((x, y), True) | x <- [0 .. width -1], y <- [0 .. height -1]]
 
 whiteDisplay :: Display
-whiteDisplay =  baseDisplay displaySize
+whiteDisplay = baseDisplay displaySize
 
 buildDisplayImage :: DisplaySize -> Display -> T.Image
 buildDisplayImage (displayWidth, displayHeight) display =
